@@ -44,6 +44,14 @@ export default function HomePage() {
   const [isFocused, setIsFocused] = useState(false)
   const navigate = useNavigate()
 
+  const HOT_QUESTIONS = [
+    'AI 会创造哪些新职业',
+    '一人公司会成为未来吗',
+    'AI 为什么改变世界',
+    '普通人如何抓住 AI 红利',
+    '人类未来会灭亡吗',
+  ]
+
   useEffect(() => {
     const interval = setInterval(() => {
       setPlaceholderIndex((i) => (i + 1) % PLACEHOLDER_TOPICS.length)
@@ -62,27 +70,100 @@ export default function HomePage() {
     <div className="relative h-full overflow-y-auto">
       <CosmicBackground />
 
-      <div className="absolute top-20 left-[8%] w-72 h-72 bg-indigo-600/6 rounded-full blur-3xl animate-float" />
-      <div className="absolute top-[35%] right-[8%] w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-      <div className="absolute bottom-24 left-[25%] w-80 h-80 bg-violet-600/6 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
+      <div className="absolute top-16 left-[6%] w-72 h-72 bg-indigo-600/6 rounded-full blur-3xl animate-float" />
+      <div className="absolute top-[40%] right-[6%] w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+      <div className="absolute bottom-24 left-[20%] w-80 h-80 bg-violet-600/6 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
 
-      <div className="relative z-10 mx-auto w-full max-w-5xl px-6 py-20 md:py-28 space-y-28">
-        <RevealSection className="text-center">
-          <div className="inline-flex items-center gap-3 mb-8">
+      {/* 第一屏：巨大标题 + 入口输入框 + 热门探索 */}
+      <section className="relative z-10 flex min-h-[88vh] items-center">
+        <div className="mx-auto w-full max-w-5xl px-6 pt-20 pb-16 md:pt-28 md:pb-24">
+          <div className="inline-flex items-center gap-3 mb-6">
             <div className="w-2 h-2 rounded-full bg-cyan-400/80 animate-pulse-glow" />
             <span className="text-sm text-slate-500 tracking-[0.18em] uppercase">WorldFlow</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-semibold leading-[1.25] tracking-tight text-slate-100 max-w-4xl mx-auto">
-            WorldFlow 是一个由 AI 实时生成的
-            <br />
-            <span className="text-gradient">无限探索世界</span>
-          </h1>
-          <p className="mt-8 text-lg text-slate-300/90 leading-relaxed max-w-3xl mx-auto">
-            你看到的每一个节点，都不是提前设计好的。<br />
-            AI 会根据你的探索路径，不断生成新的方向、趋势与未来连接。
-          </p>
-        </RevealSection>
 
+          <h1 className="text-4xl md:text-6xl font-semibold leading-[1.15] tracking-tight text-slate-100 max-w-4xl">
+            探索任何问题背后的
+            <br />
+            <span className="text-gradient">无限世界</span>
+          </h1>
+
+          <p className="mt-6 text-base md:text-lg text-slate-300/90 leading-relaxed max-w-2xl">
+            WorldFlow 会把一个问题，扩展成不断生长的 AI 世界网络。
+            不是一问一答，而是进入一个会持续生成的新世界。
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-10">
+            <div
+              className={`
+                home-input-shell glass-strong rounded-2xl p-2 transition-all duration-500
+                ${isFocused
+                  ? 'home-input-shell-focused'
+                  : 'home-input-shell-idle'
+                }
+              `}
+            >
+              <div className="home-input-glow" />
+              <div className="relative flex items-center gap-3 px-4 pt-3 pb-2">
+                <div className="home-input-orb" />
+                <input
+                  type="text"
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  placeholder={PLACEHOLDER_TOPICS[placeholderIndex]}
+                  className="w-full bg-transparent text-lg md:text-xl text-slate-100 placeholder:text-slate-600 outline-none border-0"
+                  autoFocus
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 pb-3 gap-3">
+                <p className="text-xs text-slate-500">
+                  输入一个问题，进入你的第一层世界。
+                </p>
+                <button
+                  type="submit"
+                  disabled={!topic.trim()}
+                  className={`
+                    home-cta-button flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm
+                    ${topic.trim()
+                      ? 'home-cta-active'
+                      : 'home-cta-disabled'
+                    }
+                  `}
+                >
+                  开始探索
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div className="mt-6 space-y-3">
+            <p className="text-xs text-slate-500 tracking-[0.18em] uppercase">
+              热门探索
+            </p>
+            <div className="flex flex-wrap gap-2.5">
+              {HOT_QUESTIONS.map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  onClick={() => {
+                    setTopic(q)
+                    navigate(`/explore?q=${encodeURIComponent(q)}`)
+                  }}
+                  className="home-hot-pill"
+                >
+                  <span className="text-base">🔥</span>
+                  <span className="text-xs sm:text-sm">{q}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 后续信息区块：对比 / 机制 / 价值 / 探索步骤 / 产品宣言 */}
+      <div className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-20 md:pb-28 space-y-28">
         <RevealSection className="grid md:grid-cols-2 gap-8">
           <article className="glass-strong rounded-2xl p-8">
             <p className="text-xs tracking-[0.2em] text-slate-500 mb-4">02 / 对比认知</p>
