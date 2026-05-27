@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -13,26 +13,26 @@ class ExploreNode(BaseModel):
 
 class ExpandRequest(BaseModel):
     topic: str = Field(..., min_length=1, max_length=500)
-    parent_title: str | None = None
-    context_path: list[str] = Field(default_factory=list)
+    parent_title: Optional[str] = None
+    context_path: List[str] = Field(default_factory=list)
 
 
 class ExpandResponse(BaseModel):
-    nodes: list[ExploreNode]
+    nodes: List[ExploreNode]
 
 
 class DetailRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=500)
     description: str = ""
-    context_path: list[str] = Field(default_factory=list)
+    context_path: List[str] = Field(default_factory=list)
 
 
 class NodeDetail(BaseModel):
     explanation: str
     why_important: str
     future_impact: str
-    related_directions: list[str]
-    next_explore: list[str]
+    related_directions: List[str]
+    next_explore: List[str]
 
 
 class DetailResponse(BaseModel):

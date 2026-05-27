@@ -1,7 +1,7 @@
 import json
 import logging
 import re
-from typing import Any
+from typing import Any, Dict, List
 
 import httpx
 
@@ -11,7 +11,7 @@ from prompts import SYSTEM_PROMPT, get_detail_prompt, get_expand_prompt
 
 logger = logging.getLogger(__name__)
 
-FALLBACK_ROOT_NODES: dict[str, list[ExploreNode]] = {
+FALLBACK_ROOT_NODES: Dict[str, List[ExploreNode]] = {
     "default": [
         ExploreNode(title="AI Agent 生态", description="自主 Agent 正在重塑每一个工作流", type="concept"),
         ExploreNode(title="自动化边界", description="人类劳动退居编排，机器接管执行", type="future"),
@@ -23,7 +23,7 @@ FALLBACK_ROOT_NODES: dict[str, list[ExploreNode]] = {
     ]
 }
 
-FALLBACK_EXPAND_NODES: list[ExploreNode] = [
+FALLBACK_EXPAND_NODES: List[ExploreNode] = [
     ExploreNode(title="涌现行为", description="系统开始超越设计者的预期", type="concept"),
     ExploreNode(title="人机共生", description="协作超越工具使用的边界", type="philosophy"),
     ExploreNode(title="Agent 集群", description="成千上万个 Agent 协同运作", type="future"),
@@ -33,7 +33,7 @@ FALLBACK_EXPAND_NODES: list[ExploreNode] = [
 ]
 
 
-def _extract_json(text: str) -> dict[str, Any]:
+def _extract_json(text: str) -> Dict[str, Any]:
     text = text.strip()
     if text.startswith("```"):
         text = re.sub(r"^```(?:json)?\n?", "", text)
@@ -99,9 +99,9 @@ class AIService:
     async def expand_nodes(
         self,
         topic: str,
-        context_path: list[str],
+        context_path: List[str],
         is_root: bool = False,
-    ) -> list[ExploreNode]:
+    ) -> List[ExploreNode]:
         count = 6
         prompt = get_expand_prompt(topic, context_path, is_root=is_root, count=count)
 
@@ -123,7 +123,7 @@ class AIService:
         self,
         title: str,
         description: str,
-        context_path: list[str],
+        context_path: List[str],
     ) -> NodeDetail:
         prompt = get_detail_prompt(title, description, context_path)
 
